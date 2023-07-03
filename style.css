@@ -1,4 +1,8 @@
+* {
+    font-family: 'Space Grotesk', sans-serif;
+    box-sizing: border-box;
+  }
+
 body {
-font-family: 'Space Grotesk', sans-serif;
 background-color: #3E3EE2; 
 }
