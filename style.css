@@ -4,5 +4,25 @@
   }
 
 body {
-background-color: #3E3EE2; 
+height: 100vh;
+flex-direction: column;
+position: relative;
+background-size: cover;
+background: url('https://images.unsplash.com/photo-1621198777376-d776b7725a93?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3135&q=80'); 
+}
+
+main {
+display: grid;
+}
+
+main * {
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.flex-ctr {
+display: flex;
+justify-content: center;
+align-items: center;
 }
