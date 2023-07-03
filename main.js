@@ -1,6 +1,18 @@
 /*----- constants -----*/
-const AUDIO = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-simple-countdown-922.mp3');
-
+const AUDIO = new Audio('https://www.videvo.net/sound-effect/voice-astronaut-03/449481/');
+const CATEGORIES = {
+Animals: [Dog, cat, bird, fish, bugs],
+Food: [fruit, vegetable, meat, candy, bread],
+Places: [Bolivia, Canada, Philippines, France, Egypt]
+};
+const SPACE_MAN = {
+    thl: {img: 'imgs/thl.jpg'},
+    thr: {img: 'imgs/thr.jpg'},
+    lh: {img: 'imgs/lh.jpg'},
+    rh: {img: 'imgs/rh.jpg'},
+    ll: {img: 'imgs/ll.jpg'},
+    rl: {img: 'imgs/rl.jpg'}
+  };
 
 
 /*----- app's state (variables) -----*/
@@ -87,7 +99,7 @@ function render() {
 }
 
 function renderCountdown(cb) {
-  let count = 3; 
+  let count = 2; 
   AUDIO.currentTime = 0;
   AUDIO.play();
   countdownEl.style.visibility = 'visible';
