@@ -14,7 +14,7 @@ const SPACE_MAN = {
     rl: {img: 'imgs/rl.jpg'}
   };
 
-
+  
 /*----- app's state (variables) -----*/
 let scores; //object key of 'p' -> Player score; 't' -> Tie; 'c' -> Computer score {p: 0, t:0, c:0}
 
