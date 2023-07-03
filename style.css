@@ -15,6 +15,10 @@ main {
 display: grid;
 }
 
+p {
+color: #FFFFFF;
+}
+
 main * {
 display: flex;
 justify-content: center;

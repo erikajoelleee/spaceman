@@ -1,9 +1,9 @@
 /*----- constants -----*/
 const AUDIO = new Audio('https://www.videvo.net/sound-effect/voice-astronaut-03/449481/');
 const CATEGORIES = {
-Animals: [Dog, cat, bird, fish, bugs],
-Food: [fruit, vegetable, meat, candy, bread],
-Places: [Bolivia, Canada, Philippines, France, Egypt]
+Animals: ['dog', 'cat', 'bird', 'fish', 'bugs'],
+Food: ['fruit', 'vegetable', 'meat', 'candy', 'bread'],
+Places: ['Bolivia', 'Canada', 'Philippines', 'France', 'Egypt']
 };
 const SPACE_MAN = {
     thl: {img: 'imgs/thl.jpg'},

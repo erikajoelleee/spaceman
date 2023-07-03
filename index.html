@@ -12,6 +12,7 @@
     <header>SPACEMAN</header>
 </head>
 <body class ="flex-ctr">
+<p>Pick a category and the game will randomize a word for you to guess. Guess each letter before you complete the spaceman!</p>
 <main>
 <div id='alphabet'>
 <button>A</button>
@@ -41,17 +42,16 @@
 <button>Y</button>
 <button>Z </button><br>
 </div>
-<button onclick="myFunction()">Play</button><br>
+<p id="catagoryName"></p>
+<div id="hold">
+</div>
+<p id="mylives"></p>
+<p id="clue">Clue -</p> 
 <img src="imgs/spaceman.jpeg"><br>
 <div class="container">
 <button id="hint">Hint</button>
 <button id="reset">Play again</button>
   </div>
 </main>
-<script>
-    function myFunction() {
-      alert("Pick a category and the game will randomize a word for you to guess. Guess each letter before you complete the spaceman!");
-    }
-    </script>
 </body>
 </html>
