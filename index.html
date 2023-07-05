@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -12,25 +15,26 @@
     <header>SPACEMAN</header>
 </head>
 <body class ="flex-ctr">
-<p>Pick a category and the game will randomize a word for you to guess. Guess each letter before you complete the spaceman!</p>
+<p>Pick a category and the game will randomize a word for you to guess. <br>Guess each letter before you complete the spaceman!</p>
 <p id="catagoryName"></p>
-<button>Animals</button>
-<button>Food</button>
-<button>Places</button><br>
-<main>
- <div class="wrapper">
-    <div id="buttons">
-    </div>  
-     <div id="hold">
-     </div>
-     <p id="mylives"></p>
-<img id="whole" src="imgs/spaceman.jpeg"><br>
-</div>
-</main>
-<div class="container">
-    <p id="clue">Clue -</p> <br>
+<nav>
+    <button>Animals</button>
+    <button>Food</button>
+    <button>Places</button> 
+</nav>
+  <div id="hold">
+    <h2 id="categoryName"></h2>
+    <p id="guessed-letters">Guessed Letters:</p>
+    <p id="mylives">Lives:</p>
+    <div id="spaceman">
+      <img id="spaceman-image" src="">
+      <p id="clue"></p>
+    </div>
+    <div id="buttons"></div>
     <button id="hint">Hint</button>
-    <button id="reset">Play again</button>
-      </div>
+    <button id="reset">Reset</button>
+    <p id="result-message"></p>
+    <p id="word-display"></p>
+  </div>
 </body>
 </html>

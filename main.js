@@ -1,138 +1,185 @@
 /*----- constants -----*/
-const AUDIO = new Audio('https://www.videvo.net/sound-effect/voice-astronaut-03/449481/');
+const winAudio = new Audio('https://www.barbneal.com/wp-content/uploads/marvin13.mp3');
+const loseAudio = new Audio('https://www.barbneal.com/wp-content/uploads/marvin11.mp3');
 const CATEGORIES = {
-Animals: ['dog', 'cat', 'bird', 'fish', 'bugs'],
-Food: ['fruit', 'vegetable', 'meat', 'candy', 'bread'],
-Places: ['Bolivia', 'Canada', 'Philippines', 'France', 'Egypt']
+  Animals: ['dog', 'cat', 'bird', 'fish', 'bugs'],
+  Food: ['fruit', 'vegetable', 'meat', 'candy', 'bread'],
+  Places: ['Bolivia', 'Canada', 'Philippines', 'France', 'Egypt']
 };
 const SPACE_MAN = {
-    one: {img: 'imgs/1.jpg'},
-    two: {img: 'imgs/2.jpg'},
-    three: {img: 'imgs/3.jpg'},
-    four: {img: 'imgs/4.jpg'},
-    five: {img: 'imgs/5.jpg'},
-    six: {img: 'imgs/6.jpg'},
-    seven: {img: 'imgs/7.jpg'},
-    eight: {img: 'imgs/8.jpg'},
-    nine: {img: 'imgs/9.jpg'}
-  };
+  one: { img: 'imgs/1.jpg' },
+  two: { img: 'imgs/2.jpg' },
+  three: { img: 'imgs/3.jpg' },
+  four: { img: 'imgs/4.jpg' },
+  five: { img: 'imgs/5.jpg' },
+  six: { img: 'imgs/6.jpg' },
+  seven: { img: 'imgs/7.jpg' },
+  eight: { img: 'imgs/8.jpg' },
+  nine: { img: 'imgs/9.jpg' }
+};
 
-  let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
-  'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
-  't', 'u', 'v', 'w', 'x', 'y', 'z'];
 /*----- app's state (variables) -----*/
-let scores; //object key of 'p' -> Player score; 't' -> Tie; 'c' -> Computer score {p: 0, t:0, c:0}
-
-let results; // Object key of 'p' -> player results; 'c' computer results; {p: 'p', c: 's'}
-// values of 'r' -> rock, 'p' -> paper, 's' -> scissors
-
-let winner; // string 'w' if player wins, 'l' if player loses {'w', 'l'}
-
-const buttons = function () {
-    myButtons = document.getElementById('buttons');
-    letters = document.createElement('ul');
-
-    for (i = 0; i < alphabet.length; i++) {
-      letters.id = 'alphabet';
-      list = document.createElement('li');
-      list.id = 'letter';
-      list.innerHTML = alphabet[i];
-      check();
-      myButtons.appendChild(letters);
-      letters.appendChild(list);
-    }
-  }
-    
+let selectedCategory;
+let selectedWord;
+let guessedLetters;
+let incorrectGuesses;
+let maxIncorrectGuesses = 9;
 
 /*----- cached element references -----*/
-const pResultEl = document.getElementById('p-result');
-const cResultEl = document.getElementById('c-result');
-const countdownEl = document.getElementById('countdown');
-
+const categoryButtons = document.querySelectorAll('nav button');
+const holdElement = document.getElementById('hold');
+const livesElement = document.getElementById('lives'); // Updated ID here
+const clueElement = document.getElementById('clue');
+const hintButton = document.getElementById('hint');
+const resetButton = document.getElementById('reset');
+const resultMessageElement = document.getElementById('result-message');
 
 /*----- event listeners -----*/
-document.querySelector('main')
-  .addEventListener('click', handleChoice);
+categoryButtons.forEach(button => {
+  button.addEventListener('click', handleCategorySelection);
+});
+button.addEventListener('click', () => handleLetterGuess(letter));
+hintButton.addEventListener('click', handleHint);
+resetButton.addEventListener('click', resetGame);
 
 /*----- functions -----*/
 init();
 
-// initialize all state, then call render();
 function init() {
-  scores = {
-    p: 0,
-    t: 0,
-    c:0
-  };
-  results = {
-    p: 'r',
-    c: 'r'
-  };
-  winner = 't';
+  selectedCategory = null;
+  selectedWord = null;
+  guessedLetters = [];
+  incorrectGuesses = 0;
+  alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
   render();
 }
 
-// in response to user interaction (player makes a move),
-// we update all impaced state, then finally, call render
-function handleChoice (evt) {
-  // guards (do nothing unless one of the three buttons were clicked)
-  if (evt.target.tagName !== 'BUTTON') return;
-  // player has made a chocie
-  results.p = evt.target.innerText.toLowerCase();
-// compute a random choice for the computer
-results.c = getRandomRPS();
-  winner = getWinner();
-  scores[winner] ++;
+function handleCategorySelection(event) {
+  selectedCategory = event.target.textContent;
+  selectedWord = getRandomWordFromCategory(selectedCategory);
+  guessedLetters = Array(selectedWord.length).fill('');
+  incorrectGuesses = 0;
+
   render();
 }
 
-function getWinner() {
-  if (results.p === results.c) return 't';
-  return RPS_LOOKUP[results.p].beats  === results.c ? 'p' : 'c';
-}
-
-function getRandomRPS() {
-  const rps = Object.keys(RPS_LOOKUP);
-  const rndIdx = Math.floor(Math.random() * rps.length);
-  return rps[rndIdx];
-}
-
-function renderScores() {
-  for (let key in scores) {
-    const scoreEl = document.getElementById(`${key}-score`);
-    scoreEl.innerText = scores[key];
-  }
-}
-
-function renderResults() {
- pResultEl.src = RPS_LOOKUP[results.p].img;
- cResultEl.src = RPS_LOOKUP[results.c].img;
- pResultEl.style.borderColor = winner === 'p' ? 'grey' : 'white';
- cResultEl.style.borderColor = winner === 'p' ? 'grey' : 'white';
-}
-
-// transfer/visualize all state to the DOM
-function render() {
-  renderCountdown(function() {
-  renderScores();
-  renderResults();
-    });
-}
-
-function renderCountdown(cb) {
-  let count = 2; 
-  AUDIO.currentTime = 0;
-  AUDIO.play();
-  countdownEl.style.visibility = 'visible';
-  countdownEl.innerText = count;
-  const timerId = setInterval(function() {
-    count--;
-    if (count) {
-      countdownEl.innerText = count;
-    } else {
-      clearInterval(timerId);
-      countdownEl.style.visibility = 'hidden';
-      cb();
+function handleLetterGuess(letter) {
+    const pressedKey = letter.toLowerCase();
+    if (alphabet.includes(pressedKey)) {
+      const letterIndex = selectedWord.toLowerCase().indexOf(pressedKey);
+  
+      if (letterIndex === -1) {
+        incorrectGuesses++;
+      } else {
+        updateGuessedLetters(letterIndex, pressedKey);
+      }
+  
+      render();
     }
-  }, 1000);
+  }
+
+
+function handleHint() {
+  const hints = {
+    Animals: ["Man's best friend", "Felines", "Feathered creature", "tuna is a type of", "insects are generalized as"],
+    Food: ["Sweet and juicy", "Good for your health", "Protein source", "Sugary treats", "carbs on carbs"],
+    Places: ["South American country", "North of USA", "multi-islanded country in Asia", "country where the city of love is", "Pyramids are found here"]
+  };
+
+  const hintIndex = CATEGORIES[selectedCategory].indexOf(selectedWord);
+  const hint = hints[selectedCategory][hintIndex];
+
+  clueElement.textContent = `Clue: ${hint}`;
 }
+function resetGame() {
+    selectedCategory = null;
+    selectedWord = null;
+    guessedLetters = [];
+    incorrectGuesses = 0;
+  
+    render();
+  }
+  
+  function getRandomWordFromCategory(category) {
+    const words = CATEGORIES[category];
+    const randomIndex = Math.floor(Math.random() * words.length);
+    return words[randomIndex];
+  }
+  
+  function updateGuessedLetters(letterIndex, letter) {
+    guessedLetters[letterIndex] = letter.toLowerCase();
+  }
+  
+  function isLetterGuessed(letter) {
+    return guessedLetters.includes(letter.toLowerCase());
+  }
+  
+  function isWordGuessed() {
+    return guessedLetters.join('').toLowerCase() === selectedWord.toLowerCase();
+  }
+  
+  function isGameOver() {
+    return incorrectGuesses >= maxIncorrectGuesses;
+  }
+  
+  function render() {
+    renderCategoryName();
+    renderButtons();
+    renderWordDisplay();
+    renderLives();
+    renderSpacemanImage(getSpacemanPiece());
+    renderClue();
+    renderResultMessage();
+  }
+  
+  function renderCategoryName() {
+    const categoryNameElement = document.getElementById('categoryName');
+    categoryNameElement.textContent = selectedCategory ? `Category: ${selectedCategory}` : '';
+  }
+  
+  function renderButtons() {
+    const buttonsElement = document.getElementById('buttons');
+    buttonsElement.innerHTML = '';
+  
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    alphabet.forEach(letter => {
+      const button = document.createElement('button');
+      button.textContent = letter;
+      button.disabled = isLetterGuessed(letter) || isGameOver();
+      buttonsElement.appendChild(button);
+    });
+  }
+  
+  function renderWordDisplay() {
+    const guessedLettersText = guessedLetters.join(' ');
+    wordDisplayElement.textContent = `Word: ${guessedLettersText}`;
+  }
+  
+  function renderLives() {
+    const remainingLives = maxIncorrectGuesses - incorrectGuesses;
+    livesElement.textContent = `Lives: ${remainingLives}/${maxIncorrectGuesses}`;
+  }
+  
+  function getSpacemanPiece() {
+    return `piece${incorrectGuesses + 1}`;
+  }
+  
+  function renderSpacemanImage(piece) {
+    spacemanImageElement.src = SPACE_MAN[piece].img;
+  }
+  
+  function renderClue() {
+    clueElement.textContent = `Clue: ${selectedWord.length} letters`;
+  }
+  
+  function renderResultMessage() {
+    resultMessageElement.textContent = '';
+  }
+  
+  function renderResult(won) {
+    const resultMessage = won ? 'You did it!' : 'Game over!';
+    resultMessageElement.textContent = resultMessage;
+  }
+  
+  render();
