@@ -6,12 +6,15 @@ Food: ['fruit', 'vegetable', 'meat', 'candy', 'bread'],
 Places: ['Bolivia', 'Canada', 'Philippines', 'France', 'Egypt']
 };
 const SPACE_MAN = {
-    thl: {img: 'imgs/thl.jpg'},
-    thr: {img: 'imgs/thr.jpg'},
-    lh: {img: 'imgs/lh.jpg'},
-    rh: {img: 'imgs/rh.jpg'},
-    ll: {img: 'imgs/ll.jpg'},
-    rl: {img: 'imgs/rl.jpg'}
+    one: {img: 'imgs/1.jpg'},
+    two: {img: 'imgs/2.jpg'},
+    three: {img: 'imgs/3.jpg'},
+    four: {img: 'imgs/4.jpg'},
+    five: {img: 'imgs/5.jpg'},
+    six: {img: 'imgs/6.jpg'},
+    seven: {img: 'imgs/7.jpg'},
+    eight: {img: 'imgs/8.jpg'},
+    nine: {img: 'imgs/9.jpg'}
   };
 
   let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',

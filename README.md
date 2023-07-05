@@ -2,12 +2,9 @@
 Spaceman Game Project 1
 Erika Roncal 
 
-# <Your Project's Title>
-A description of your game. Background info of the game is a nice touch.
-
 # Screenshot
 
-<img src="url to your image on imgur">
+<img src="https://i.imgur.com/9d7MFQt.jpg">
 <img src="url to your image on imgur">
 
 # Technologies Used
@@ -24,5 +21,31 @@ A description of your game. Background info of the game is a nice touch.
 
 # Next Steps
 
-- Future enhancement one...
-- Future enhancement two... 
+1. Initialize the game:
+1.1 Create an arrav of word list(s).
+1.2. Select a random word from the chosen array.
+1.3. Create an empty array to store the guessed letters.
+1.4. Set the maximum number of incorrect guesses allowed (9).
+1.5. Set the initial number of incorrect guesses to 0.
+2. Display game instructions.
+3. Repeat until the game ends:
+3.1. Display the spaceman picture based on the number of incorrect guesses.
+3.2. Display the word with underscores for unguessed letters and correctly guessed letters.
+3.3. Display the letters guessed.
+3.4. Prompt the player to guess a letter.
+3.5. Validate the input:
+3.5.1. If the input is not a single letter, display an error message and return to 3.4.
+3.5.2. If the letter has been guessed already, display an error message and return to 3.4.
+3.6. Add the guessed letter to the array ot guessed letters.
+3.7. Check if the guessed letter is in the word:
+3.7.1. If the letter is in the word, reveal it in the displayed word.
+3.7.2. If the letter is not in the word, incrementing the number of incorrect guesses and lives would reflect that it is going down.
+3.8. Player won:
+3.8.1. If all letters were guessed correctly, display a congrats message and end the game.
+3.9. Player lost:
+3.9.1. If incorrect guesses exceed the maximum allowed, display a defeat message and end the game.
+4. Display the final state of the game (word, spaceman/hangman, guessed letters).
+5. Ask the player if they want to play
+again
+5.1. If the player wants to play again, return to step 1.
+5.2. If the player does not want to play again, end the game.
