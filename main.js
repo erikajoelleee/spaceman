@@ -14,7 +14,9 @@ const SPACE_MAN = {
     rl: {img: 'imgs/rl.jpg'}
   };
 
-  
+  let alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+  'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
+  't', 'u', 'v', 'w', 'x', 'y', 'z'];
 /*----- app's state (variables) -----*/
 let scores; //object key of 'p' -> Player score; 't' -> Tie; 'c' -> Computer score {p: 0, t:0, c:0}
 
@@ -22,6 +24,22 @@ let results; // Object key of 'p' -> player results; 'c' computer results; {p: '
 // values of 'r' -> rock, 'p' -> paper, 's' -> scissors
 
 let winner; // string 'w' if player wins, 'l' if player loses {'w', 'l'}
+
+const buttons = function () {
+    myButtons = document.getElementById('buttons');
+    letters = document.createElement('ul');
+
+    for (i = 0; i < alphabet.length; i++) {
+      letters.id = 'alphabet';
+      list = document.createElement('li');
+      list.id = 'letter';
+      list.innerHTML = alphabet[i];
+      check();
+      myButtons.appendChild(letters);
+      letters.appendChild(list);
+    }
+  }
+    
 
 /*----- cached element references -----*/
 const pResultEl = document.getElementById('p-result');
