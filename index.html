@@ -1,33 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <script defer src="main.js"></script>
-    <title>Spaceman</title>
-    <header>SPACEMAN</header>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>Spaceman</title>
+  <header>SPACEMAN</header>
 </head>
-<body class ="flex-ctr">
-<p>Pick a category and the game will randomize a word for you to guess. <br>Guess each letter before you complete the spaceman!</p>
-<p id="catagoryName"></p>
-<nav>
+<body class="flex-ctr">
+  <p>Pick a category and the game will randomize a word for you to guess. <br>Guess each letter before you complete the spaceman!</p>
+  <p id="categoryName"></p>
+  <nav>
     <button>Animals</button>
     <button>Food</button>
-    <button>Places</button> 
-</nav>
+    <button>Places</button>
+  </nav>
   <div id="hold">
     <h2 id="categoryName"></h2>
     <p id="guessed-letters">Guessed Letters:</p>
     <p id="mylives">Lives:</p>
     <div id="spaceman">
-      <img id="spaceman-image" src="">
+      <img id="spaceman-image" src="imgs/transparent spaceman.png">
       <p id="clue"></p>
     </div>
     <div id="buttons"></div>
@@ -36,5 +35,6 @@
     <p id="result-message"></p>
     <p id="word-display"></p>
   </div>
+  <script defer src="main.js"></script>
 </body>
 </html>

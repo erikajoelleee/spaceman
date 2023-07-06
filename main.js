@@ -6,6 +6,7 @@ const CATEGORIES = {
   Food: ['fruit', 'vegetable', 'meat', 'candy', 'bread'],
   Places: ['Bolivia', 'Canada', 'Philippines', 'France', 'Egypt']
 };
+
 const SPACE_MAN = {
   one: { img: 'imgs/1.jpg' },
   two: { img: 'imgs/2.jpg' },
@@ -23,12 +24,14 @@ let selectedCategory;
 let selectedWord;
 let guessedLetters;
 let incorrectGuesses;
-let maxIncorrectGuesses = 9;
+const maxIncorrectGuesses = 9; // Maximum incorrect guesses allowed
 
 /*----- cached element references -----*/
 const categoryButtons = document.querySelectorAll('nav button');
-const holdElement = document.getElementById('hold');
-const livesElement = document.getElementById('lives'); // Updated ID here
+const buttonsContainer = document.getElementById('buttons');
+const guessedLettersElement = document.getElementById('guessed-letters');
+const livesElement = document.getElementById('mylives');
+const spacemanImageElement = document.getElementById('spaceman-image');
 const clueElement = document.getElementById('clue');
 const hintButton = document.getElementById('hint');
 const resetButton = document.getElementById('reset');
@@ -38,7 +41,8 @@ const resultMessageElement = document.getElementById('result-message');
 categoryButtons.forEach(button => {
   button.addEventListener('click', handleCategorySelection);
 });
-button.addEventListener('click', () => handleLetterGuess(letter));
+buttonsContainer.addEventListener('click', handleLetterClick);
+window.addEventListener('keydown', handleLetterPress);
 hintButton.addEventListener('click', handleHint);
 resetButton.addEventListener('click', resetGame);
 
@@ -50,7 +54,6 @@ function init() {
   selectedWord = null;
   guessedLetters = [];
   incorrectGuesses = 0;
-  alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
   render();
 }
@@ -59,127 +62,175 @@ function handleCategorySelection(event) {
   selectedCategory = event.target.textContent;
   selectedWord = getRandomWordFromCategory(selectedCategory);
   guessedLetters = Array(selectedWord.length).fill('');
+
+  // Reset incorrectGuesses
   incorrectGuesses = 0;
 
   render();
 }
 
-function handleLetterGuess(letter) {
-    const pressedKey = letter.toLowerCase();
-    if (alphabet.includes(pressedKey)) {
-      const letterIndex = selectedWord.toLowerCase().indexOf(pressedKey);
-  
-      if (letterIndex === -1) {
-        incorrectGuesses++;
-      } else {
-        updateGuessedLetters(letterIndex, pressedKey);
-      }
-  
-      render();
-    }
-  }
-
-
-function handleHint() {
-  const hints = {
-    Animals: ["Man's best friend", "Felines", "Feathered creature", "tuna is a type of", "insects are generalized as"],
-    Food: ["Sweet and juicy", "Good for your health", "Protein source", "Sugary treats", "carbs on carbs"],
-    Places: ["South American country", "North of USA", "multi-islanded country in Asia", "country where the city of love is", "Pyramids are found here"]
-  };
-
-  const hintIndex = CATEGORIES[selectedCategory].indexOf(selectedWord);
-  const hint = hints[selectedCategory][hintIndex];
-
-  clueElement.textContent = `Clue: ${hint}`;
+function handleLetterClick(event) {
+  const pressedLetter = event.target.textContent.toLowerCase();
+  event.target.disabled = true; // Disable the clicked button
+  processGuess(pressedLetter);
 }
-function resetGame() {
-    selectedCategory = null;
-    selectedWord = null;
-    guessedLetters = [];
-    incorrectGuesses = 0;
-  
-    render();
+
+function handleLetterPress(event) {
+  const pressedLetter = event.key.toLowerCase();
+  if ('abcdefghijklmnopqrstuvwxyz'.includes(pressedLetter) && !guessedLetters.includes(pressedLetter)) {
+    const button = document.querySelector(`#buttons button[data-letter="${pressedLetter}"]`);
+    if (button) {
+      button.disabled = true; // Disable the corresponding button
+    }
+    processGuess(pressedLetter);
   }
-  
-  function getRandomWordFromCategory(category) {
-    const words = CATEGORIES[category];
-    const randomIndex = Math.floor(Math.random() * words.length);
-    return words[randomIndex];
+}
+
+function processGuess(letter) {
+  if (!selectedWord || guessedLetters.includes(letter)) {
+    return;
   }
-  
-  function updateGuessedLetters(letterIndex, letter) {
-    guessedLetters[letterIndex] = letter.toLowerCase();
+
+  guessedLetters.push(letter);
+
+  if (selectedWord.includes(letter)) {
+    updateHiddenWord();
+  } else {
+    incorrectGuesses++;
+    renderSpaceman();
+    updateLives();
   }
-  
-  function isLetterGuessed(letter) {
-    return guessedLetters.includes(letter.toLowerCase());
-  }
-  
-  function isWordGuessed() {
-    return guessedLetters.join('').toLowerCase() === selectedWord.toLowerCase();
-  }
-  
-  function isGameOver() {
-    return incorrectGuesses >= maxIncorrectGuesses;
-  }
-  
-  function render() {
-    renderCategoryName();
-    renderButtons();
-    renderWordDisplay();
-    renderLives();
-    renderSpacemanImage(getSpacemanPiece());
-    renderClue();
-    renderResultMessage();
-  }
-  
-  function renderCategoryName() {
-    const categoryNameElement = document.getElementById('categoryName');
-    categoryNameElement.textContent = selectedCategory ? `Category: ${selectedCategory}` : '';
-  }
-  
-  function renderButtons() {
-    const buttonsElement = document.getElementById('buttons');
-    buttonsElement.innerHTML = '';
-  
+
+  updateGuessedLetters
+
+    function updateHiddenWord() {
+        const wordDisplay = selectedWord
+          .split('')
+          .map(letter => (guessedLetters.includes(letter) ? letter : '_'))
+          .join(' ');
+        document.getElementById('word-display').textContent = wordDisplay;
+      }
+      
+      function updateGuessedLetters() {
+        guessedLettersElement.textContent = `Guessed Letters: ${guessedLetters.join(' ')}`;
+      }
+      
+      function updateLives() {
+        livesElement.textContent = `Lives: ${maxIncorrectGuesses - incorrectGuesses}`;
+      }
+      
+      function getRandomWordFromCategory(category) {
+        const words = CATEGORIES[category];
+        return words[Math.floor(Math.random() * words.length)];
+      }
+      
+      function renderSpaceman() {
+        spacemanImageElement.src = SPACE_MAN[incorrectGuesses.toString()].img;
+      }
+      
+      function checkGameStatus() {
+        const isWordGuessed =
+          guessedLetters.length === selectedWord.length &&
+          guessedLetters.every((letter, index) => letter === selectedWord[index]);
+      
+        if (isWordGuessed) {
+          endGame(true);
+        } else if (incorrectGuesses === maxIncorrectGuesses) {
+          endGame(false);
+        }
+      }
+      
+      function endGame(isWon) {
+        if (isWon) {
+          resultMessageElement.textContent = 'You did it!';
+          winAudio.play(); // Play win sound
+        } else {
+          resultMessageElement.textContent = `Oops! Game over. The word was "${selectedWord}".`;
+          loseAudio.play(); // Play lose sound
+        }
+      
+        // Disable letter buttons
+        buttonsContainer.removeEventListener('click', handleLetterClick);
+        window.removeEventListener('keydown', handleLetterPress);
+      
+        // Disable hint button
+        hintButton.disabled = true;
+      }
+      
+      function handleHint() {
+        clueElement.textContent = `Hint: ${getHint(selectedWord)}`;
+        hintButton.disabled = true;
+        document.getElementById('word-display').style.display = 'none';
+      }
+      
+      function getHint(word) {
+        const hints = {
+          dog: "Man's best friend",
+          cat: 'felines',
+          bird: 'Flies in the sky',
+          fish: 'Lives underwater',
+          bugs: 'Insects',
+          fruit: 'Healthy snacks',
+          vegetable: 'Leafy greens',
+          meat: 'Protein source',
+          candy: 'Sweet treats',
+          bread: 'Carbs on carbs',
+          Bolivia: 'South American country',
+          Canada: 'Country above USA',
+          Philippines: 'Multi-island country in Asia',
+          France: 'Eiffel tower is found in this country',
+          Egypt: 'Home of the pyramids'
+        };
+      
+        return hints[word] || '';
+      }
+      
+      function resetGame() {
+        selectedCategory = null;
+        selectedWord = null;
+        guessedLetters = [];
+        incorrectGuesses = 0;
+      
+        render();
+      }
+      
+      function render()
+        categoryButtons.forEach(button => {
+          button.disabled = selectedCategory !== null;
+        });
+      
+        guessedLettersElement.textContent = `Guessed Letters: ${guessedLetters.join(' ')}`;
+        livesElement.textContent = `Lives: ${maxIncorrectGuesses - incorrectGuesses}`;
+        spacemanImageElement.src = SPACE_MAN.one.img;
+        clueElement.textContent = '';
+        hintButton.disabled = false;
+        resultMessageElement.textContent = '';
+      
+        if (selectedCategory) {
+          clueElement.textContent = `Hint: ${getHint(selectedWord)}`;
+        }
+      
+        const wordDisplay = selectedWord
+          .split('')
+          .map(letter => (guessedLetters.includes(letter) ? letter : '_'))
+          .join(' ');
+        document.getElementById
+        ('word-display').textContent = wordDisplay;
+
+  buttonsContainer.innerHTML = '';
+
+  if (selectedCategory) {
     const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
     alphabet.forEach(letter => {
       const button = document.createElement('button');
       button.textContent = letter;
-      button.disabled = isLetterGuessed(letter) || isGameOver();
-      buttonsElement.appendChild(button);
+      button.dataset.letter = letter;
+      button.disabled = guessedLetters.includes(letter);
+      button.addEventListener('click', handleLetterClick);
+      buttonsContainer.appendChild(button);
     });
   }
-  
-  function renderWordDisplay() {
-    const guessedLettersText = guessedLetters.join(' ');
-    wordDisplayElement.textContent = `Word: ${guessedLettersText}`;
-  }
-  
-  function renderLives() {
-    const remainingLives = maxIncorrectGuesses - incorrectGuesses;
-    livesElement.textContent = `Lives: ${remainingLives}/${maxIncorrectGuesses}`;
-  }
-  
-  function getSpacemanPiece() {
-    return `piece${incorrectGuesses + 1}`;
-  }
-  
-  function renderSpacemanImage(piece) {
-    spacemanImageElement.src = SPACE_MAN[piece].img;
-  }
-  
-  function renderClue() {
-    clueElement.textContent = `Clue: ${selectedWord.length} letters`;
-  }
-  
-  function renderResultMessage() {
-    resultMessageElement.textContent = '';
-  }
-  
-  function renderResult(won) {
-    const resultMessage = won ? 'You did it!' : 'Game over!';
-    resultMessageElement.textContent = resultMessage;
-  }
-  
-  render();
+}
+
+
