@@ -1,15 +1,37 @@
 /*----- constants -----*/
-const winAudio = new Audio('https://www.barbneal.com/wp-content/uploads/marvin13.mp3');
-const loseAudio = new Audio('https://www.barbneal.com/wp-content/uploads/marvin11.mp3');
+const winAudio = new Audio(
+  "https://www.barbneal.com/wp-content/uploads/marvin13.mp3"
+);
+const loseAudio = new Audio(
+  "https://www.barbneal.com/wp-content/uploads/marvin11.mp3"
+);
 const CATEGORIES = {
-  Animals: ['dog', 'cat', 'bird', 'fish', 'bugs'],
-  Food: ['fruit', 'vegetable', 'meat', 'candy', 'bread'],
-  Places: ['Bolivia', 'Canada', 'Philippines', 'France', 'Egypt']
+  Animals: ["dog", "cat", "bird", "fish", "bugs"],
+  Food: ["fruit", "vegetable", "meat", "candy", "bread"],
+  Places: ["Bolivia", "Canada", "Philippines", "France", "Egypt"],
 };
 const hints = [
-  ['Man\'s best friend', 'A suspicion that bad luck will happen if one crosses you', 'Winged creatures', 'Catch them in the ocean', 'Six-legged insects'],
-  ['One of the sweeter food groups', 'Leafy greens', 'Protein group', 'These can cause cavities', 'Carbs on carbs'],
-  ['Country in South America', 'North of USA', 'Multi-island country in Asia', 'Country where the city of love is', 'Pyramids are found here']
+  [
+    "Man's best friend",
+    "A suspicion that bad luck will happen if one crosses you",
+    "Winged creatures",
+    "Catch them in the ocean",
+    "Six-legged insects",
+  ],
+  [
+    "One of the sweeter food groups",
+    "Leafy greens",
+    "Protein group",
+    "These can cause cavities",
+    "Carbs on carbs",
+  ],
+  [
+    "Country in South America",
+    "North of USA",
+    "Multi-island country in Asia",
+    "Country where the city of love is",
+    "Pyramids are found here",
+  ],
 ];
 
 /*----- app's state (variables) -----*/
@@ -22,28 +44,28 @@ let isGameEnded = false;
 let isHintDisplayed = false;
 
 /*----- cached element references -----*/
-const categoryButtons = Array.from(document.querySelectorAll('nav button'));
-const buttonsContainer = document.getElementById('buttons');
-const guessedLettersElement = document.getElementById('guessed-letters');
-const livesElement = document.getElementById('mylives');
-const clueElement = document.getElementById('clue');
-const hintButton = document.getElementById('hint');
-const resetButton = document.getElementById('reset');
-const resultMessageElement = document.getElementById('result-message');
-const wordDisplayElement = document.getElementById('word-display');
+const categoryButtons = Array.from(document.querySelectorAll("nav button"));
+const buttonsContainer = document.getElementById("buttons");
+const guessedLettersElement = document.getElementById("guessed-letters");
+const livesElement = document.getElementById("mylives");
+const clueElement = document.getElementById("clue");
+const hintButton = document.getElementById("hint");
+const resetButton = document.getElementById("reset");
+const resultMessageElement = document.getElementById("result-message");
+const wordDisplayElement = document.getElementById("word-display");
 
 /*----- event listeners -----*/
-categoryButtons.forEach(button => {
-  button.addEventListener('click', handleCategorySelection);
+categoryButtons.forEach((button) => {
+  button.addEventListener("click", handleCategorySelection);
 });
-hintButton.addEventListener('click', handleHint);
-resetButton.addEventListener('click', resetGame);
+hintButton.addEventListener("click", handleHint);
+resetButton.addEventListener("click", resetGame);
 
-winAudio.addEventListener('canplaythrough', () => {
+winAudio.addEventListener("canplaythrough", () => {
   winAudio.readyToPlay = true;
 });
 
-loseAudio.addEventListener('canplaythrough', () => {
+loseAudio.addEventListener("canplaythrough", () => {
   loseAudio.readyToPlay = true;
 });
 
@@ -64,7 +86,7 @@ function init() {
 function handleCategorySelection(event) {
   selectedCategory = event.target.textContent;
   selectedWord = getRandomWordFromCategory(selectedCategory);
-  guessedLetters = Array(selectedWord.length).fill('');
+  guessedLetters = Array(selectedWord.length).fill("");
 
   // Reset incorrectLetters
   incorrectLetters = [];
@@ -102,7 +124,7 @@ function processGuess(letter) {
 
   // Check if the game is won or lost
   const isWordGuessed =
-    guessedLetters.join('').toLowerCase() === selectedWord.toLowerCase();
+    guessedLetters.join("").toLowerCase() === selectedWord.toLowerCase();
 
   if (isWordGuessed) {
     endGame(true);
@@ -117,7 +139,7 @@ function endGame(isWon) {
   isGameEnded = true;
 
   if (isWon) {
-    resultMessageElement.textContent = 'You did it!';
+    resultMessageElement.textContent = "You did it!";
     if (winAudio.readyToPlay) {
       winAudio.play();
     }
@@ -129,7 +151,7 @@ function endGame(isWon) {
   }
 
   // Disable letter buttons
-  buttonsContainer.removeEventListener('click', handleLetterClick);
+  buttonsContainer.removeEventListener("click", handleLetterClick);
 
   // Disable hint button
   hintButton.disabled = true;
@@ -144,8 +166,8 @@ function resetGame() {
   isHintDisplayed = false;
 
   // Re-enable all letter buttons
-  const letterButtons = buttonsContainer.querySelectorAll('button');
-  letterButtons.forEach(button => {
+  const letterButtons = buttonsContainer.querySelectorAll("button");
+  letterButtons.forEach((button) => {
     button.disabled = false;
   });
 
@@ -153,12 +175,14 @@ function resetGame() {
 }
 
 function render() {
-  categoryButtons.forEach(button => {
+  categoryButtons.forEach((button) => {
     button.disabled = selectedCategory !== null;
   });
 
-  livesElement.textContent = `Lives: ${maxIncorrectGuesses - incorrectLetters.length}`;
-  clueElement.textContent = '';
+  livesElement.textContent = `Lives: ${
+    maxIncorrectGuesses - incorrectLetters.length
+  }`;
+  clueElement.textContent = "";
   hintButton.disabled = false;
 
   if (selectedCategory && !isHintDisplayed) {
@@ -168,30 +192,33 @@ function render() {
   }
 
   const wordDisplay = selectedWord
-    .split('')
-    .map(
-      (letter, index) =>
-        guessedLetters.includes(letter.toLowerCase()) ||
-        guessedLetters.includes(letter.toUpperCase())
-          ? letter
-          : '_'
+    .split("")
+    .map((letter, index) =>
+      guessedLetters.includes(letter.toLowerCase()) ||
+      guessedLetters.includes(letter.toUpperCase())
+        ? letter
+        : "_"
     )
-    .join(' ');
+    .join(" ");
   wordDisplayElement.textContent = wordDisplay;
 
-  guessedLettersElement.textContent = `Guessed Letters: ${incorrectLetters.join(' ')}`;
+  guessedLettersElement.textContent = `Guessed Letters: ${incorrectLetters.join(
+    " "
+  )}`;
 
-  buttonsContainer.innerHTML = '';
+  buttonsContainer.innerHTML = "";
 
   if (selectedCategory) {
-    const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
 
-    alphabet.forEach(letter => {
-      const button = document.createElement('button');
+    alphabet.forEach((letter) => {
+      const button = document.createElement("button");
       button.textContent = letter;
       button.dataset.letter = letter.toLowerCase();
-      button.disabled = guessedLetters.includes(letter.toLowerCase()) || guessedLetters.includes(letter.toUpperCase());
-      button.addEventListener('click', handleLetterClick);
+      button.disabled =
+        guessedLetters.includes(letter.toLowerCase()) ||
+        guessedLetters.includes(letter.toUpperCase());
+      button.addEventListener("click", handleLetterClick);
       buttonsContainer.appendChild(button);
     });
   }
@@ -211,11 +238,11 @@ function handleHint() {
 }
 
 function getHint(word) {
-  const categoryIndex = Object.values(CATEGORIES).findIndex(category =>
+  const categoryIndex = Object.values(CATEGORIES).findIndex((category) =>
     category.includes(word)
   );
   if (categoryIndex !== -1) {
     return hints[categoryIndex][CATEGORIES[selectedCategory].indexOf(word)];
   }
-  return '';
+  return "";
 }
