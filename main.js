@@ -16,7 +16,7 @@ const hints = [
 let selectedCategory;
 let selectedWord;
 let guessedLetters;
-let incorrectGuesses;
+let incorrectLetters;
 const maxIncorrectGuesses = 9; // Maximum incorrect guesses allowed
 let isGameEnded = false;
 let isHintDisplayed = false;
@@ -36,8 +36,6 @@ const wordDisplayElement = document.getElementById('word-display');
 categoryButtons.forEach(button => {
   button.addEventListener('click', handleCategorySelection);
 });
-buttonsContainer.addEventListener('click', handleLetterClick);
-window.addEventListener('keydown', handleLetterPress);
 hintButton.addEventListener('click', handleHint);
 resetButton.addEventListener('click', resetGame);
 
@@ -56,7 +54,7 @@ function init() {
   selectedCategory = null;
   selectedWord = null;
   guessedLetters = [];
-  incorrectGuesses = 0;
+  incorrectLetters = [];
   isGameEnded = false;
   isHintDisplayed = false;
 
@@ -68,8 +66,8 @@ function handleCategorySelection(event) {
   selectedWord = getRandomWordFromCategory(selectedCategory);
   guessedLetters = Array(selectedWord.length).fill('');
 
-  // Reset incorrectGuesses
-  incorrectGuesses = 0;
+  // Reset incorrectLetters
+  incorrectLetters = [];
   isHintDisplayed = false;
 
   render();
@@ -81,61 +79,36 @@ function handleLetterClick(event) {
   processGuess(pressedLetter);
 }
 
-function handleLetterPress(event) {
-  if (!isGameEnded) {
-    const pressedLetter = event.key.toLowerCase();
-    const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
-    if (lowercaseLetters.includes(pressedLetter) && !guessedLetters.includes(pressedLetter)) {
-      const button = document.querySelector(`#buttons button[data-letter="${pressedLetter}"]`);
-      if (button) {
-        button.disabled = true; // Disable the corresponding button
-      }
-      processGuess(pressedLetter);
-    }
-  }
-
-  const isWordGuessed =
-    guessedLetters.length === selectedWord.length &&
-    guessedLetters.every((letter, index) => letter.toLowerCase() === selectedWord[index].toLowerCase());
-
-  if (isWordGuessed) {
-    endGame(true);
-  }
-}
-
 function processGuess(letter) {
   const lowercaseLetter = letter.toLowerCase(); // Convert the guessed letter to lowercase
 
-  if (selectedWord.toLowerCase().includes(lowercaseLetter)) {
-    // Correct guess
-    guessedLetters = guessedLetters.map((guessedLetter, index) =>
-      selectedWord[index].toLowerCase() === lowercaseLetter ? selectedWord[index] : guessedLetter
-    );
-  } else {
+  let isCorrectGuess = false;
+
+  // Check if the guessed letter matches any letter in the selected word
+  for (let i = 0; i < selectedWord.length; i++) {
+    const selectedLetter = selectedWord[i].toLowerCase();
+
+    if (selectedLetter === lowercaseLetter) {
+      // Correct guess
+      guessedLetters[i] = selectedWord[i];
+      isCorrectGuess = true;
+    }
+  }
+
+  if (!isCorrectGuess) {
     // Incorrect guess
-    incorrectGuesses++;
-    guessedLetters.push(lowercaseLetter); // Add the incorrect guess to the guessedLetters array
+    incorrectLetters.push(lowercaseLetter);
   }
 
   // Check if the game is won or lost
-  if (guessedLetters.join('').toLowerCase() === selectedWord.toLowerCase()) {
+  const isWordGuessed =
+    guessedLetters.join('').toLowerCase() === selectedWord.toLowerCase();
+
+  if (isWordGuessed) {
     endGame(true);
-  } else if (incorrectGuesses >= maxIncorrectGuesses) {
+  } else if (incorrectLetters.length >= maxIncorrectGuesses) {
     endGame(false);
   }
-
-  // Update guessedLetters array for correct letter in the hidden word
-  const updatedGuessedLetters = guessedLetters.map((guessedLetter, index) => {
-    const selectedLetter = selectedWord[index];
-    if (
-      guessedLetter === '' &&
-      (selectedLetter.toLowerCase() === lowercaseLetter || selectedLetter.toUpperCase() === letter)
-    ) {
-      return selectedLetter;
-    }
-    return guessedLetter;
-  });
-  guessedLetters = updatedGuessedLetters;
 
   render();
 }
@@ -157,7 +130,6 @@ function endGame(isWon) {
 
   // Disable letter buttons
   buttonsContainer.removeEventListener('click', handleLetterClick);
-  window.removeEventListener('keydown', handleLetterPress);
 
   // Disable hint button
   hintButton.disabled = true;
@@ -167,7 +139,7 @@ function resetGame() {
   selectedCategory = null;
   selectedWord = null;
   guessedLetters = [];
-  incorrectGuesses = 0;
+  incorrectLetters = [];
   isGameEnded = false;
   isHintDisplayed = false;
 
@@ -185,11 +157,9 @@ function render() {
     button.disabled = selectedCategory !== null;
   });
 
-  guessedLettersElement.textContent = `Guessed Letters: ${guessedLetters.join(' ')}`;
-  livesElement.textContent = `Lives: ${maxIncorrectGuesses - incorrectGuesses}`;
+  livesElement.textContent = `Lives: ${maxIncorrectGuesses - incorrectLetters.length}`;
   clueElement.textContent = '';
   hintButton.disabled = false;
-  resultMessageElement.textContent = '';
 
   if (selectedCategory && !isHintDisplayed) {
     clueElement.textContent = 'Click "Hint" to reveal a hint.';
@@ -199,11 +169,17 @@ function render() {
 
   const wordDisplay = selectedWord
     .split('')
-    .map((letter, index) =>
-      guessedLetters.includes(letter.toLowerCase()) || guessedLetters.includes(letter.toUpperCase()) ? letter : '_'
+    .map(
+      (letter, index) =>
+        guessedLetters.includes(letter.toLowerCase()) ||
+        guessedLetters.includes(letter.toUpperCase())
+          ? letter
+          : '_'
     )
     .join(' ');
   wordDisplayElement.textContent = wordDisplay;
+
+  guessedLettersElement.textContent = `Guessed Letters: ${incorrectLetters.join(' ')}`;
 
   buttonsContainer.innerHTML = '';
 
@@ -235,7 +211,9 @@ function handleHint() {
 }
 
 function getHint(word) {
-  const categoryIndex = Object.values(CATEGORIES).findIndex(category => category.includes(word));
+  const categoryIndex = Object.values(CATEGORIES).findIndex(category =>
+    category.includes(word)
+  );
   if (categoryIndex !== -1) {
     return hints[categoryIndex][CATEGORIES[selectedCategory].indexOf(word)];
   }
