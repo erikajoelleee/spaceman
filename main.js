@@ -6,6 +6,11 @@ const CATEGORIES = {
   Food: ['fruit', 'vegetable', 'meat', 'candy', 'bread'],
   Places: ['Bolivia', 'Canada', 'Philippines', 'France', 'Egypt']
 };
+const hints = [
+  ['Man\'s best friend', 'A suspicion that bad luck will happen if one crosses you', 'Winged creatures', 'Catch them in the ocean', 'Six-legged insects'],
+  ['One of the sweeter food groups', 'Leafy greens', 'Protein group', 'These can cause cavities', 'Carbs on carbs'],
+  ['Country in South America', 'North of USA', 'Multi-island country in Asia', 'Country where the city of love is', 'Pyramids are found here']
+];
 
 /*----- app's state (variables) -----*/
 let selectedCategory;
@@ -14,9 +19,10 @@ let guessedLetters;
 let incorrectGuesses;
 const maxIncorrectGuesses = 9; // Maximum incorrect guesses allowed
 let isGameEnded = false;
+let isHintDisplayed = false;
 
 /*----- cached element references -----*/
-const categoryButtons = document.querySelectorAll('nav button');
+const categoryButtons = Array.from(document.querySelectorAll('nav button'));
 const buttonsContainer = document.getElementById('buttons');
 const guessedLettersElement = document.getElementById('guessed-letters');
 const livesElement = document.getElementById('mylives');
@@ -24,6 +30,7 @@ const clueElement = document.getElementById('clue');
 const hintButton = document.getElementById('hint');
 const resetButton = document.getElementById('reset');
 const resultMessageElement = document.getElementById('result-message');
+const wordDisplayElement = document.getElementById('word-display');
 
 /*----- event listeners -----*/
 categoryButtons.forEach(button => {
@@ -34,6 +41,14 @@ window.addEventListener('keydown', handleLetterPress);
 hintButton.addEventListener('click', handleHint);
 resetButton.addEventListener('click', resetGame);
 
+winAudio.addEventListener('canplaythrough', () => {
+  winAudio.readyToPlay = true;
+});
+
+loseAudio.addEventListener('canplaythrough', () => {
+  loseAudio.readyToPlay = true;
+});
+
 /*----- functions -----*/
 init();
 
@@ -43,6 +58,7 @@ function init() {
   guessedLetters = [];
   incorrectGuesses = 0;
   isGameEnded = false;
+  isHintDisplayed = false;
 
   render();
 }
@@ -54,6 +70,7 @@ function handleCategorySelection(event) {
 
   // Reset incorrectGuesses
   incorrectGuesses = 0;
+  isHintDisplayed = false;
 
   render();
 }
@@ -86,33 +103,24 @@ function handleLetterPress(event) {
 }
 
 function processGuess(letter) {
-  if (!selectedWord || guessedLetters.includes(letter)) {
-    return;
-  }
-
-  guessedLetters.push(letter);
-
-  if (selectedWord.toLowerCase().includes(letter)) {
-    updateHiddenWord();
+  if (selectedWord.includes(letter)) {
+    // Correct guess
+    guessedLetters = guessedLetters.map((guessedLetter, index) =>
+      selectedWord[index].toLowerCase() === letter ? selectedWord[index] : guessedLetter
+    );
   } else {
+    // Incorrect guess
     incorrectGuesses++;
-    updateLives();
   }
 
-  updateGuessedLetters();
-  checkGameStatus();
-}
-
-function checkGameStatus() {
-  const isWordGuessed =
-    guessedLetters.length === selectedWord.length &&
-    guessedLetters.every((letter, index) => letter.toLowerCase() === selectedWord[index].toLowerCase());
-
-  if (isWordGuessed) {
+  // Check if the game is won or lost
+  if (guessedLetters.join('') === selectedWord) {
     endGame(true);
-  } else if (incorrectGuesses === maxIncorrectGuesses) {
+  } else if (incorrectGuesses >= maxIncorrectGuesses) {
     endGame(false);
   }
+
+  render();
 }
 
 function endGame(isWon) {
@@ -120,10 +128,14 @@ function endGame(isWon) {
 
   if (isWon) {
     resultMessageElement.textContent = 'You did it!';
-    winAudio.play(); // Play win sound
+    if (winAudio.readyToPlay) {
+      winAudio.play();
+    }
   } else {
     resultMessageElement.textContent = `Oops! Game over. The word was "${selectedWord}".`;
-    loseAudio.play(); // Play lose sound
+    if (loseAudio.readyToPlay) {
+      loseAudio.play();
+    }
   }
 
   // Disable letter buttons
@@ -140,6 +152,7 @@ function resetGame() {
   guessedLetters = [];
   incorrectGuesses = 0;
   isGameEnded = false;
+  isHintDisplayed = false;
 
   render();
 }
@@ -155,7 +168,9 @@ function render() {
   hintButton.disabled = false;
   resultMessageElement.textContent = '';
 
-  if (selectedCategory) {
+  if (selectedCategory && !isHintDisplayed) {
+    clueElement.textContent = 'Click "Hint" to reveal a hint.';
+  } else if (selectedCategory && isHintDisplayed) {
     clueElement.textContent = `Hint: ${getHint(selectedWord)}`;
   }
 
@@ -163,7 +178,7 @@ function render() {
     .split('')
     .map(letter => (guessedLetters.includes(letter.toLowerCase()) ? letter : '_'))
     .join(' ');
-  document.getElementById('word-display').textContent = wordDisplay;
+  wordDisplayElement.textContent = wordDisplay;
 
   buttonsContainer.innerHTML = '';
 
@@ -180,3 +195,24 @@ function render() {
     });
   }
 }
+
+function getRandomWordFromCategory(category) {
+  const words = CATEGORIES[category];
+  const randomIndex = Math.floor(Math.random() * words.length);
+  return words[randomIndex];
+}
+
+function handleHint() {
+  if (!isHintDisplayed) {
+    isHintDisplayed = true;
+    clueElement.textContent = `Hint: ${getHint(selectedWord)}`;
+  }
+}
+
+function getHint(word) {
+    const categoryIndex = Object.values(CATEGORIES).findIndex(category => category.includes(word));
+    if (categoryIndex !== -1) {
+      return hints[categoryIndex][CATEGORIES[selectedCategory].indexOf(word)];
+    }
+    return '';
+  }
