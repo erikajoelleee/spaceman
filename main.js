@@ -96,7 +96,6 @@ function processGuess(letter) {
     updateHiddenWord();
   } else {
     incorrectGuesses++;
-    renderSpaceman();
     updateLives();
   }
 
@@ -105,78 +104,79 @@ function processGuess(letter) {
 }
 
 function checkGameStatus() {
-    const isWordGuessed =
-      guessedLetters.length === selectedWord.length &&
-      guessedLetters.every((letter, index) => letter.toLowerCase() === selectedWord[index].toLowerCase());
-  
-    if (isWordGuessed) {
-      endGame(true);
-    } else if (incorrectGuesses === maxIncorrectGuesses) {
-      endGame(false);
-    }
+  const isWordGuessed =
+    guessedLetters.length === selectedWord.length &&
+    guessedLetters.every((letter, index) => letter.toLowerCase() === selectedWord[index].toLowerCase());
+
+  if (isWordGuessed) {
+    endGame(true);
+  } else if (incorrectGuesses === maxIncorrectGuesses) {
+    endGame(false);
   }
-  
-  function endGame(isWon) {
-    isGameEnded = true;
-  
-    if (isWon) {
-      resultMessageElement.textContent = 'You did it!';
-      winAudio.play(); // Play win sound
-    } else {
-      resultMessageElement.textContent = `Oops! Game over. The word was "${selectedWord}".`;
-      loseAudio.play(); // Play lose sound
-    }
-  
-    // Disable letter buttons
-    buttonsContainer.removeEventListener('click', handleLetterClick);
-    window.removeEventListener('keydown', handleLetterPress);
-  
-    // Disable hint button
-    hintButton.disabled = true;
+}
+
+function endGame(isWon) {
+  isGameEnded = true;
+
+  if (isWon) {
+    resultMessageElement.textContent = 'You did it!';
+    winAudio.play(); // Play win sound
+  } else {
+    resultMessageElement.textContent = `Oops! Game over. The word was "${selectedWord}".`;
+    loseAudio.play(); // Play lose sound
   }
-  
-  function resetGame() {
-    selectedCategory = null;
-    selectedWord = null;
-    guessedLetters = [];
-    incorrectGuesses = 0;
-    render();
-    isGameEnded = false;
+
+  // Disable letter buttons
+  buttonsContainer.removeEventListener('click', handleLetterClick);
+  window.removeEventListener('keydown', handleLetterPress);
+
+  // Disable hint button
+  hintButton.disabled = true;
+}
+
+function resetGame() {
+  selectedCategory = null;
+  selectedWord = null;
+  guessedLetters = [];
+  incorrectGuesses = 0;
+  isGameEnded = false;
+
+  render();
+}
+
+function render() {
+  categoryButtons.forEach(button => {
+    button.disabled = selectedCategory !== null;
+  });
+
+  guessedLettersElement.textContent = `Guessed Letters: ${guessedLetters.join(' ')}`;
+  livesElement.textContent = `Lives: ${maxIncorrectGuesses - incorrectGuesses}`;
+  clueElement.textContent = '';
+  hintButton.disabled = false;
+  resultMessageElement.textContent = '';
+
+  if (selectedCategory) {
+    clueElement.textContent = `Hint: ${getHint(selectedWord)}`;
   }
-  
-  function render() {
-    categoryButtons.forEach(button => {
-      button.disabled = selectedCategory !== null;
+
+  const wordDisplay = selectedWord
+    .split('')
+    .map(letter => (guessedLetters.includes(letter.toLowerCase()) ? letter : '_'))
+    .join(' ');
+  document.getElementById('word-display').textContent = wordDisplay;
+
+  buttonsContainer.innerHTML = '';
+
+  if (selectedCategory) {
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
+    alphabet.forEach(letter => {
+      const button = document.createElement('button');
+      button.textContent = letter.toUpperCase();
+      button.dataset.letter = letter.toLowerCase();
+      button.disabled = guessedLetters.includes(letter.toLowerCase());
+      button.addEventListener('click', handleLetterClick);
+      buttonsContainer.appendChild(button);
     });
-  
-    guessedLettersElement.textContent = `Guessed Letters: ${guessedLetters.join(' ')}`;
-    livesElement.textContent = `Lives: ${maxIncorrectGuesses - incorrectGuesses}`;
-    clueElement.textContent = '';
-    hintButton.disabled = false;
-    resultMessageElement.textContent = '';
-  
-    if (selectedCategory) {
-      clueElement.textContent = `Hint: ${getHint(selectedWord)}`;
-    }
-  
-    const wordDisplay = selectedWord
-      .split('')
-      .map(letter => (guessedLetters.includes(letter.toLowerCase()) ? letter : '_'))
-      .join(' ');
-    document.getElementById('word-display').textContent = wordDisplay;
-  
-    buttonsContainer.innerHTML = '';
-  
-    if (selectedCategory) {
-      const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
-  
-      alphabet.forEach(letter => {
-        const button = document.createElement('button');
-        button.textContent = letter.toUpperCase();
-        button.dataset.letter = letter.toLowerCase();
-        button.disabled = guessedLetters.includes(letter.toLowerCase());
-        button.addEventListener('click', handleLetterClick);
-        buttonsContainer.appendChild(button);
-      });
-    }
   }
+}
