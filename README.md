@@ -5,19 +5,21 @@ Erika Roncal
 # Screenshot
 
 <img src="https://i.imgur.com/9d7MFQt.jpg">
-<img src="url to your image on imgur">
+<img src="https://i.imgur.com/pgcXkTD.png">
+<img src="https://i.imgur.com/kZGdEUU.png">
+<img src="https://i.imgur.com/kQGdfS4.png">
+<img src="https://i.imgur.com/kQGdfS4.png">
+<img src="https://i.imgur.com/sITN8x2.png">
 
 # Technologies Used
 
 - JavaScript
 - HTML
 - CSS
-- CardStarter CSS Library
 
 # Getting Started
 
-[Click to View Project Planning](your Trello url here)
-[Click to Play Connect Four!](your deployment url here)
+[Spaceman](https://erikajoelleee.github.io/spaceman/)
 
 # Next Steps
 
