@@ -76,7 +76,7 @@ function handleCategorySelection(event) {
 }
 
 function handleLetterClick(event) {
-  const pressedLetter = event.target.textContent.toLowerCase();
+  const pressedLetter = event.target.textContent;
   event.target.disabled = true; // Disable the clicked button
   processGuess(pressedLetter);
 }
@@ -85,40 +85,57 @@ function handleLetterPress(event) {
   if (!isGameEnded) {
     const pressedLetter = event.key.toLowerCase();
     const lowercaseLetters = 'abcdefghijklmnopqrstuvwxyz';
-    const uppercaseLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     if (lowercaseLetters.includes(pressedLetter) && !guessedLetters.includes(pressedLetter)) {
       const button = document.querySelector(`#buttons button[data-letter="${pressedLetter}"]`);
       if (button) {
         button.disabled = true; // Disable the corresponding button
       }
       processGuess(pressedLetter);
-    } else if (uppercaseLetters.includes(pressedLetter) && !guessedLetters.includes(pressedLetter.toLowerCase())) {
-      const button = document.querySelector(`#buttons button[data-letter="${pressedLetter.toLowerCase()}"]`);
-      if (button) {
-        button.disabled = true; // Disable the corresponding button
-      }
-      processGuess(pressedLetter.toLowerCase());
     }
+  }
+
+  const isWordGuessed =
+    guessedLetters.length === selectedWord.length &&
+    guessedLetters.every((letter, index) => letter.toLowerCase() === selectedWord[index].toLowerCase());
+
+  if (isWordGuessed) {
+    endGame(true);
   }
 }
 
 function processGuess(letter) {
-  if (selectedWord.includes(letter)) {
+  const lowercaseLetter = letter.toLowerCase(); // Convert the guessed letter to lowercase
+
+  if (selectedWord.toLowerCase().includes(lowercaseLetter)) {
     // Correct guess
     guessedLetters = guessedLetters.map((guessedLetter, index) =>
-      selectedWord[index].toLowerCase() === letter ? selectedWord[index] : guessedLetter
+      selectedWord[index].toLowerCase() === lowercaseLetter ? selectedWord[index] : guessedLetter
     );
   } else {
     // Incorrect guess
     incorrectGuesses++;
+    guessedLetters.push(lowercaseLetter); // Add the incorrect guess to the guessedLetters array
   }
 
   // Check if the game is won or lost
-  if (guessedLetters.join('') === selectedWord) {
+  if (guessedLetters.join('').toLowerCase() === selectedWord.toLowerCase()) {
     endGame(true);
   } else if (incorrectGuesses >= maxIncorrectGuesses) {
     endGame(false);
   }
+
+  // Update guessedLetters array for correct letter in the hidden word
+  const updatedGuessedLetters = guessedLetters.map((guessedLetter, index) => {
+    const selectedLetter = selectedWord[index];
+    if (
+      guessedLetter === '' &&
+      (selectedLetter.toLowerCase() === lowercaseLetter || selectedLetter.toUpperCase() === letter)
+    ) {
+      return selectedLetter;
+    }
+    return guessedLetter;
+  });
+  guessedLetters = updatedGuessedLetters;
 
   render();
 }
@@ -154,6 +171,12 @@ function resetGame() {
   isGameEnded = false;
   isHintDisplayed = false;
 
+  // Re-enable all letter buttons
+  const letterButtons = buttonsContainer.querySelectorAll('button');
+  letterButtons.forEach(button => {
+    button.disabled = false;
+  });
+
   render();
 }
 
@@ -176,7 +199,9 @@ function render() {
 
   const wordDisplay = selectedWord
     .split('')
-    .map(letter => (guessedLetters.includes(letter.toLowerCase()) ? letter : '_'))
+    .map((letter, index) =>
+      guessedLetters.includes(letter.toLowerCase()) || guessedLetters.includes(letter.toUpperCase()) ? letter : '_'
+    )
     .join(' ');
   wordDisplayElement.textContent = wordDisplay;
 
@@ -187,9 +212,9 @@ function render() {
 
     alphabet.forEach(letter => {
       const button = document.createElement('button');
-      button.textContent = letter.toUpperCase();
+      button.textContent = letter;
       button.dataset.letter = letter.toLowerCase();
-      button.disabled = guessedLetters.includes(letter.toLowerCase());
+      button.disabled = guessedLetters.includes(letter.toLowerCase()) || guessedLetters.includes(letter.toUpperCase());
       button.addEventListener('click', handleLetterClick);
       buttonsContainer.appendChild(button);
     });
@@ -210,9 +235,9 @@ function handleHint() {
 }
 
 function getHint(word) {
-    const categoryIndex = Object.values(CATEGORIES).findIndex(category => category.includes(word));
-    if (categoryIndex !== -1) {
-      return hints[categoryIndex][CATEGORIES[selectedCategory].indexOf(word)];
-    }
-    return '';
+  const categoryIndex = Object.values(CATEGORIES).findIndex(category => category.includes(word));
+  if (categoryIndex !== -1) {
+    return hints[categoryIndex][CATEGORIES[selectedCategory].indexOf(word)];
   }
+  return '';
+}
