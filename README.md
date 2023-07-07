@@ -7,9 +7,7 @@ Erika Roncal
 <img src="https://i.imgur.com/9d7MFQt.jpg">
 <img src="https://i.imgur.com/pgcXkTD.png">
 <img src="https://i.imgur.com/kZGdEUU.png">
-<img src="https://i.imgur.com/kQGdfS4.png">
-<img src="https://i.imgur.com/kQGdfS4.png">
-<img src="https://i.imgur.com/sITN8x2.png">
+
 
 # Technologies Used
 
