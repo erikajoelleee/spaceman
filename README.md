@@ -17,7 +17,7 @@ Erika Roncal
 
 # Getting Started
 
-[Spaceman](https://erikajoelleee.github.io/spaceman/)Spa
+[Spaceman](https://erikajoelleee.github.io/spaceman/)
 
 # Next Steps
 
