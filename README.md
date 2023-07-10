@@ -1,6 +1,6 @@
 # spaceman
 
-Spaceman Game Project 1
+Spaceman Game Project 1 SEI-620
 Erika Roncal
 
 # Screenshot
@@ -17,7 +17,7 @@ Erika Roncal
 
 # Getting Started
 
-[Spaceman](https://erikajoelleee.github.io/spaceman/)
+[Spaceman](https://erikajoelleee.github.io/spaceman/)Spa
 
 # Next Steps
 
@@ -49,3 +49,9 @@ Erika Roncal
    again
    5.1. If the player wants to play again, return to step 1.
    5.2. If the player does not want to play again, end the game.
+
+# Next Steps
+
+1. Newer icebox features to include images that will appear once Spaceman is launched when an incorrect letter is guessed in the code
+2. Lightning round mode - speed round of words to guess within a set time limit
+3. Keyboard functionality - using the keyboard as well as the clickable button board for easier use 
