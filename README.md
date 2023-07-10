@@ -67,3 +67,4 @@ Get ready to launch into an intergalactic word-guessing adventure! Let's see if 
 5. Change the cursor to be a rocketship to go along with the theme
 6. Format for mobile users
 7. Format for tablet users
+8. Fix the reset function so it doesn't overlay when it starts a new game
