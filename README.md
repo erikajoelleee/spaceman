@@ -1,7 +1,17 @@
 # spaceman
 
+By Erika Roncal
 Spaceman Game Project 1 SEI-620
-Erika Roncal
+
+Welcome to the Spaceman game! It's an exciting word-guessing challenge that will put your skills to the test.
+
+In this game, you'll have the opportunity to explore different categories such as Animals, Food, and Places. Choose a category and try to guess the hidden word within a limited number of attempts.
+
+As you make your guesses, correct letters will be revealed, bringing you closer to victory. But be careful! Incorrect guesses will bring the Spaceman one step closer to life. Can you guess the word before it's too late?
+
+To help you along the way, there's a hint feature to provide clues related to the word's category. Keep an eye on the guessed letters and the remaining lives indicator to track your progress.
+
+Get ready to launch into an intergalactic word-guessing adventure! Let's see if you have what it takes to unravel the hidden words and emerge victorious against the Spaceman!
 
 # Screenshot
 
@@ -18,8 +28,6 @@ Erika Roncal
 # Getting Started
 
 [Spaceman](https://erikajoelleee.github.io/spaceman/)
-
-# Next Steps
 
 1. Initialize the game:
    1.1 Create an arrav of word list(s).
@@ -54,4 +62,8 @@ Erika Roncal
 
 1. Newer icebox features to include images that will appear once Spaceman is launched when an incorrect letter is guessed in the code
 2. Lightning round mode - speed round of words to guess within a set time limit
-3. Keyboard functionality - using the keyboard as well as the clickable button board for easier use 
+3. Keyboard functionality - using the keyboard as well as the clickable button board for easier use
+4. Fix the wireframe to match up with original design
+5. Change the cursor to be a rocketship to go along with the theme
+6. Format for mobile users
+7. Format for tablet users

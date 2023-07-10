@@ -1,4 +1,3 @@
-/*----- constants -----*/
 const winAudio = new Audio(
   "https://www.barbneal.com/wp-content/uploads/marvin13.mp3"
 );
@@ -34,16 +33,14 @@ const hints = [
   ],
 ];
 
-/*----- app's state (variables) -----*/
 let selectedCategory;
 let selectedWord;
 let guessedLetters;
 let incorrectLetters;
-const maxIncorrectGuesses = 9; // Maximum incorrect guesses allowed
+const maxIncorrectGuesses = 9;
 let isGameEnded = false;
 let isHintDisplayed = false;
 
-/*----- cached element references -----*/
 const categoryButtons = Array.from(document.querySelectorAll("nav button"));
 const buttonsContainer = document.getElementById("buttons");
 const guessedLettersElement = document.getElementById("guessed-letters");
@@ -54,7 +51,6 @@ const resetButton = document.getElementById("reset");
 const resultMessageElement = document.getElementById("result-message");
 const wordDisplayElement = document.getElementById("word-display");
 
-/*----- event listeners -----*/
 categoryButtons.forEach((button) => {
   button.addEventListener("click", handleCategorySelection);
 });
@@ -69,7 +65,6 @@ loseAudio.addEventListener("canplaythrough", () => {
   loseAudio.readyToPlay = true;
 });
 
-/*----- functions -----*/
 init();
 
 function init() {
@@ -88,7 +83,6 @@ function handleCategorySelection(event) {
   selectedWord = getRandomWordFromCategory(selectedCategory);
   guessedLetters = Array(selectedWord.length).fill("");
 
-  // Reset incorrectLetters
   incorrectLetters = [];
   isHintDisplayed = false;
 
@@ -97,32 +91,28 @@ function handleCategorySelection(event) {
 
 function handleLetterClick(event) {
   const pressedLetter = event.target.textContent;
-  event.target.disabled = true; // Disable the clicked button
+  event.target.disabled = true;
   processGuess(pressedLetter);
 }
 
 function processGuess(letter) {
-  const lowercaseLetter = letter.toLowerCase(); // Convert the guessed letter to lowercase
+  const lowercaseLetter = letter.toLowerCase();
 
   let isCorrectGuess = false;
 
-  // Check if the guessed letter matches any letter in the selected word
   for (let i = 0; i < selectedWord.length; i++) {
     const selectedLetter = selectedWord[i].toLowerCase();
 
     if (selectedLetter === lowercaseLetter) {
-      // Correct guess
       guessedLetters[i] = selectedWord[i];
       isCorrectGuess = true;
     }
   }
 
   if (!isCorrectGuess) {
-    // Incorrect guess
     incorrectLetters.push(lowercaseLetter);
   }
 
-  // Check if the game is won or lost
   const isWordGuessed =
     guessedLetters.join("").toLowerCase() === selectedWord.toLowerCase();
 
@@ -150,10 +140,8 @@ function endGame(isWon) {
     }
   }
 
-  // Disable letter buttons
   buttonsContainer.removeEventListener("click", handleLetterClick);
 
-  // Disable hint button
   hintButton.disabled = true;
 }
 
@@ -165,7 +153,6 @@ function resetGame() {
   isGameEnded = false;
   isHintDisplayed = false;
 
-  // Re-enable all letter buttons
   const letterButtons = buttonsContainer.querySelectorAll("button");
   letterButtons.forEach((button) => {
     button.disabled = false;

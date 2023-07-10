@@ -22,7 +22,6 @@ main * {
   display: flex;
   justify-content: center;
   align-items: center;
-  grid-template-columns: 15vmin 35vmin 15vmin;
 }
 
 main {
